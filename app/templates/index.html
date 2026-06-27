@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FastAPI CRUD Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header glass-panel">
+            <div class="header-content">
+                <h1><i class="fa-solid fa-server text-primary"></i> FastAPI CRUD Dashboard</h1>
+                <p>Manage users using FastAPI CRUD APIs</p>
+            </div>
+        </header>
+
+        <!-- Stats Section -->
+        <section class="stats-container">
+            <div class="stat-card glass-panel">
+                <div class="stat-icon bg-primary-light">
+                    <i class="fa-solid fa-users text-primary"></i>
+                </div>
+                <div class="stat-details">
+                    <h3>Total Users</h3>
+                    <p id="total-users">0</p>
+                </div>
+            </div>
+            <div class="stat-card glass-panel">
+                <div class="stat-icon bg-secondary-light">
+                    <i class="fa-solid fa-chart-pie text-secondary"></i>
+                </div>
+                <div class="stat-details">
+                    <h3>Average Age</h3>
+                    <p id="average-age">0</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Create User Section -->
+            <section class="create-section glass-panel">
+                <h2><i class="fa-solid fa-user-plus"></i> Create User</h2>
+                <form id="create-user-form" class="form-layout">
+                    <div class="input-group">
+                        <label for="create-name">Name</label>
+                        <div class="input-wrapper">
+                            <i class="fa-regular fa-user"></i>
+                            <input type="text" id="create-name" placeholder="John Doe" required>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="create-email">Email</label>
+                        <div class="input-wrapper">
+                            <i class="fa-regular fa-envelope"></i>
+                            <input type="email" id="create-email" placeholder="john@example.com" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="create-age">Age</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-cake-candles"></i>
+                            <input type="number" id="create-age" placeholder="25" min="1" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-large">
+                        <i class="fa-solid fa-plus"></i> Create User
+                    </button>
+                </form>
+            </section>
+
+            <!-- User Table Section -->
+            <section class="table-section glass-panel">
+                <div class="table-header">
+                    <h2><i class="fa-solid fa-list"></i> User Directory</h2>
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <input type="text" id="search-input" placeholder="Search by Name or Email...">
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table id="users-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Age</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body">
+                            <!-- Rows will be injected here by JS -->
+                        </tbody>
+                    </table>
+                    
+                    <!-- Loading State -->
+                    <div id="loading-state" class="state-container">
+                        <div class="spinner"></div>
+                        <p>Loading users...</p>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="empty-state" class="state-container hidden">
+                        <img src="https://illustrations.popsy.co/blue/surreal-hourglass.svg" alt="No users" class="empty-illustration">
+                        <p>No users available</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div id="edit-modal" class="modal-overlay hidden">
+        <div class="modal glass-panel">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-pen-to-square"></i> Edit User</h2>
+                <button class="icon-btn close-modal" id="close-modal-btn">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-user-form" class="form-layout">
+                    <input type="hidden" id="edit-id">
+                    <div class="input-group">
+                        <label for="edit-name">Name</label>
+                        <div class="input-wrapper">
+                            <i class="fa-regular fa-user"></i>
+                            <input type="text" id="edit-name" required>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="edit-email">Email</label>
+                        <div class="input-wrapper">
+                            <i class="fa-regular fa-envelope"></i>
+                            <input type="email" id="edit-email" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="edit-age">Age</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-cake-candles"></i>
+                            <input type="number" id="edit-age" min="1" required>
+                        </div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-outline close-modal" id="cancel-edit-btn">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Custom JS -->
+    <script src="script.js"></script>
+    <script src="/static/script.js"></script>
+</body>
+</html>
