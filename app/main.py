@@ -1,19 +1,27 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+
 from app.routers import users
 
-# Initialize FastAPI application
 app = FastAPI(
-    title="FastAPI CRUD Backend (In-Memory)",
-    description="A beginner-friendly FastAPI backend project demonstrating CRUD operations without a database.",
+    title="FastAPI CRUD Backend",
     version="1.0.0"
 )
 
-# Include the users router
+# Static files
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Templates
+templates = Jinja2Templates(directory="templates")
+
+# Include API routes
 app.include_router(users.router)
 
+# Home Page
 @app.get("/")
-async def root():
-    """
-    Root endpoint to verify the API is running.
-    """
-    return {"message": "Welcome to the FastAPI CRUD API. Visit /docs for the Swagger documentation."}
+async def home(request: Request):
+    return templates.TemplateResponse(
+        "index.html",
+        {"request": request}
+    )
